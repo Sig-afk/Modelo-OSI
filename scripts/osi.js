@@ -1,0 +1,76 @@
+import * as application from './application.js'
+import * as presentation from './presentation.js'
+
+function processPacket(packet) {
+  presentation.renderPresentationLayer(packet)
+  const savedKey = application.loadLastPacketKey()
+  if (savedKey) {
+    console.log('Packet key saved in localStorage:', savedKey)
+  }
+}
+
+function handleRequest(event) {
+  event.preventDefault()
+
+  const isFileChange = event.target && event.target.id === 'arquivo'
+  if (isFileChange) {
+    const textInput = document.querySelector('.text-input')
+    if (textInput) textInput.value = ''
+  }
+
+  const requestText = presentation.getRequestText()
+  const file = presentation.getSelectedFile()
+  const protocolType = isFileChange ? 'file' : application.detectProtocol(requestText, !!file)
+
+  if (!protocolType) {
+    presentation.showAlert('Por favor, digite algo ou selecione um arquivo.')
+    return
+  }
+
+  presentation.clearPresentationLayer()
+  presentation.renderProtocolName(application.getProtocolLabel(protocolType))
+
+  if (protocolType === 'email') {
+    presentation.renderEmailForm(requestText, application.USER_NAME, formData => {
+      const packet = application.createEmailPacket(requestText, formData.destinatario, formData.assunto, formData.corpo)
+      processPacket(packet)
+    })
+    return
+  }
+
+  if (protocolType === 'http') {
+    presentation.renderHttpForm(requestText, application.USER_NAME, () => {
+      const packet = application.createHttpPacket(requestText, application.USER_NAME)
+      processPacket(packet)
+    })
+    return
+  }
+
+  if (protocolType === 'chat') {
+    presentation.renderChatForm(requestText, application.USER_NAME, () => {
+      const packet = application.createChatPacket(requestText, application.USER_NAME)
+      processPacket(packet)
+    })
+    return
+  }
+
+  if (protocolType === 'file' && file) {
+    presentation.renderFileForm(file, application.USER_NAME, formData => {
+      const packet = application.createFilePacket(formData.nomeArquivo, formData.formato, formData.remetente)
+      processPacket(packet)
+      const fileInput = document.querySelector('#arquivo')
+      if (fileInput) fileInput.value = ''
+    })
+
+    const form = document.getElementById('dynamic-form')
+    if (form) {
+      form.requestSubmit()
+    }
+    return
+  }
+}
+
+presentation.initializeUI(application.USER_NAME)
+presentation.initializeEncryptionUI && presentation.initializeEncryptionUI()
+presentation.onRequestClick(handleRequest)
+presentation.onFileChange(handleRequest)

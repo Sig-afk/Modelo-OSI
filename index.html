@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./style/reset.css">
+  <link rel="stylesheet" href="./style/global.css">
+  <link rel="stylesheet" href="./style/header.css">
+  <link rel="stylesheet" href="./style/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Audiowide&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <title>Modelo OSI</title>
+</head>
+
+<body>
+  <!-- Efeitos visuais de background cibernético -->
+  <div class="cyber-bg"></div>
+  <div class="cyber-grid"></div>
+  <div class="cyber-scanline"></div>
+
+  <header class="head">
+    <div class="header-logo-title">
+      <img class="osi-img" src="./assets/osi-icon.webp" alt="OSI Icon">
+      <div class="header-text">
+        <h1 class="title">SIMULADOR OSI</h1>
+        <p class="subtitle">Laboratório de Redes & Segurança Cibernética</p>
+      </div>
+    </div>
+    <div class="user-status-badge">
+      <span class="pulse-led"></span>
+      <p class="user"></p>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="dashboard-panel">
+      <div class="panel-header">
+        <span class="panel-dot"></span>
+        <span class="panel-dot"></span>
+        <span class="panel-dot"></span>
+        <span class="panel-title">TERMINAL DE ENCAPSULAMENTO</span>
+      </div>
+      
+      <div class="request-wrapper">
+        <div class="input-prompt-container">
+          <span class="terminal-prompt">></span>
+          <input class="text-input" type="text" placeholder="Digite URL, E-mail ou Mensagem para simular...">
+        </div>
+        <button class="request-btn">Realizar Requisição</button>
+        
+        <div class="file-upload-wrapper">
+          <input type="file" name="file" id="arquivo">
+        </div>
+      </div>
+    </div>
+
+    <div class="protocol-name-wrapper">
+      <h1 class="protocol-name"></h1>
+    </div>
+
+    <div class="layers-flow-container">
+      <section class="layer-section application-layer-section hidden">
+        <div class="layer-header">
+          <span class="layer-number">7</span>
+          <h2 class="layer-title">Camada de Aplicação</h2>
+          <span class="layer-status">STATUS: ATIVO</span>
+        </div>
+        <div class="form-container"></div>
+      </section>
+
+      <section class="layer-section presentation-layer-section hidden">
+        <div class="layer-header">
+          <span class="layer-number">6</span>
+          <h2 class="layer-title">Camada de Apresentação</h2>
+          <span class="layer-status secure">CRIPTO: ATIVA</span>
+        </div>
+        <div class="presentation-container"></div>
+      </section>
+
+      <section class="layer-section encryption-section hidden">
+        <div class="layer-header">
+          <span class="layer-number">5</span>
+          <h2 class="layer-title">Criptografia</h2>
+          <span class="layer-status">FERRAMENTA</span>
+        </div>
+        <div class="encryption-container">
+          <form id="encryption-form" class="dynamic-form">
+            <h3>Criptografar Texto</h3>
+            <div class="form-group">
+              <textarea id="encrypt-input" placeholder="Digite o texto a ser criptografado..."></textarea>
+              <label>Texto</label>
+            </div>
+            <div class="form-group">
+              <select id="algorithm">
+                <option value="caesar">Algoritmo padrão</option>
+              </select>
+              <label>Algoritmo</label>
+            </div>
+            <div class="form-group">
+              <input type="number" id="caesar-shift" value="3" min="1" max="25" />
+              <label>Chave</label>
+            </div>
+            <div class="form-actions">
+              <button type="button" id="encrypt-btn" class="form-submit-btn">Criptografar</button>
+              <button type="button" id="clear-encrypt" class="form-submit-btn">Limpar</button>
+            </div>
+            <div class="form-group">
+              <textarea id="encrypt-output" readonly placeholder="Resultado"></textarea>
+              <label>Resultado</label>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+  
+  <script type="module" src="./scripts/osi.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #eff6ff;
+  border-bottom: 1px solid #bfdbfe;
+  border-radius: 0 0 20px 20px;
+}
+
+.header-logo-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.osi-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  border: 1px solid #93c5fd;
+}
+
+.title {
+  font-weight: 700;
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1d4ed8;
+}
+
+.subtitle {
+  color: #475569;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.user-status-badge {
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .head { flex-direction: column; gap: 10px; text-align: center; }
+}

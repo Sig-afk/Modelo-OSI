@@ -215,15 +215,15 @@ function drawPathHighlight() {
     const isCurrent = i === animSegment;
 
     if (isVisited) {
-      grad.addColorStop(0, '#f59e0b');
-      grad.addColorStop(1, '#f59e0b');
+      grad.addColorStop(0, '#3b82f6');
+      grad.addColorStop(1, '#3b82f6');
     } else if (isCurrent) {
-      grad.addColorStop(0, '#f59e0b');
-      grad.addColorStop(Math.min(animProgress, 1), '#ef4444');
-      grad.addColorStop(1, 'rgba(239,68,68,0.2)');
+      grad.addColorStop(0, '#3b82f6');
+      grad.addColorStop(Math.min(animProgress, 1), '#1d4ed8');
+      grad.addColorStop(1, 'rgba(29, 78, 216, 0.2)');
     } else {
-      grad.addColorStop(0, 'rgba(245,158,11,0.15)');
-      grad.addColorStop(1, 'rgba(245,158,11,0.15)');
+      grad.addColorStop(0, 'rgba(59, 130, 246, 0.15)');
+      grad.addColorStop(1, 'rgba(59, 130, 246, 0.15)');
     }
 
     ctx.strokeStyle = grad;
@@ -237,7 +237,7 @@ function drawPathHighlight() {
 }
 
 function drawRouters() {
-  const half = ROUTER_SIZE / 2;
+  const radius = ROUTER_SIZE / 2;
 
   for (const p of points) {
     const x = tx(p.x);
@@ -248,23 +248,65 @@ function drawRouters() {
     const pathIdx = currentPath.indexOf(p.id);
     const isVisitedInPath = isInPath && pathIdx <= animSegment;
 
+    ctx.save();
+
     if (isVisitedInPath) {
-      ctx.save();
-      ctx.shadowColor = '#f59e0b';
-      ctx.shadowBlur = 18;
-      ctx.drawImage(img, x - half, y - half, ROUTER_SIZE, ROUTER_SIZE);
-      ctx.restore();
+      // Glow Azul Neon Vibrante para roteador visitado na rota
+      ctx.shadowColor = '#60a5fa';
+      ctx.shadowBlur = 20;
+      
+      // Fundo circular holográfico
+      ctx.fillStyle = 'rgba(96, 165, 250, 0.25)';
+      ctx.beginPath();
+      ctx.arc(x, y, radius + 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Borda circular
+      ctx.strokeStyle = '#60a5fa';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
     } else if (p.ativo) {
-      ctx.save();
-      ctx.shadowColor = 'rgba(59, 130, 246, 0.4)';
-      ctx.shadowBlur = 8;
-      ctx.drawImage(img, x - half, y - half, ROUTER_SIZE, ROUTER_SIZE);
-      ctx.restore();
+      // Glow Azul para roteador ativo padrão
+      ctx.shadowColor = '#3b82f6';
+      ctx.shadowBlur = 12;
+      
+      // Fundo circular holográfico
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.15)';
+      ctx.beginPath();
+      ctx.arc(x, y, radius + 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Borda circular
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.8)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
     } else {
-      ctx.globalAlpha = 0.4;
-      ctx.drawImage(img, x - half, y - half, ROUTER_SIZE, ROUTER_SIZE);
-      ctx.globalAlpha = 1;
+      // Sem glow para inativos, opacidade reduzida e tom cinza
+      ctx.globalAlpha = 0.45;
+      
+      // Fundo circular
+      ctx.fillStyle = 'rgba(71, 85, 105, 0.1)';
+      ctx.beginPath();
+      ctx.arc(x, y, radius + 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Borda circular cinza
+      ctx.strokeStyle = 'rgba(100, 116, 139, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
     }
+
+    // Clip circular para desenhar a imagem cortada como círculo
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.clip();
+
+    // Desenha a imagem do roteador centralizada e redimensionada
+    ctx.drawImage(img, x - radius, y - radius, ROUTER_SIZE, ROUTER_SIZE);
+
+    ctx.restore();
   }
 }
 
@@ -276,11 +318,30 @@ function drawPacket() {
   const px = tx(a.x) + (tx(b.x) - tx(a.x)) * animProgress;
   const py = ty(a.y) + (ty(b.y) - ty(a.y)) * animProgress;
   const pSize = 28;
+  const pRadius = pSize / 2;
 
   ctx.save();
-  ctx.shadowColor = '#f59e0b';
-  ctx.shadowBlur = 20;
-  ctx.drawImage(imgPacote, px - pSize / 2, py - pSize / 2, pSize, pSize);
+  // Glow Azul Neon no pacote
+  ctx.shadowColor = '#60a5fa';
+  ctx.shadowBlur = 22;
+
+  // Fundo circular do pacote
+  ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
+  ctx.beginPath();
+  ctx.arc(px, py, pRadius + 1, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Borda circular do pacote
+  ctx.strokeStyle = '#3b82f6';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Clip circular para a imagem do pacote
+  ctx.beginPath();
+  ctx.arc(px, py, pRadius, 0, Math.PI * 2);
+  ctx.clip();
+
+  ctx.drawImage(imgPacote, px - pRadius, py - pRadius, pSize, pSize);
   ctx.restore();
 }
 

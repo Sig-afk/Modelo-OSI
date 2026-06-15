@@ -1,5 +1,38 @@
 import * as application from './application.js'
 import * as presentation from './presentation.js'
+import { SignJWT, decodeJwt } from 'https://cdn.jsdelivr.net/npm/jose@6/+esm'
+
+async function initializeSessionToken() {
+  try {
+    const message = { dados: 'dados da camada de aplicação' }
+    const payload = {
+      sessionId: crypto.randomUUID(),
+      message
+    }
+    const secret = new TextEncoder().encode('chave-teste')
+    const token = await new SignJWT(payload)
+      .setProtectedHeader({ alg: 'HS256' })
+      .sign(secret)
+
+    console.log('Token:', token)
+
+    const dados = decodeJwt(token)
+    console.log('Payload:', dados)
+
+    const url = 'ifpe.edu.br'
+    const response = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(url)}&type=A`)
+    const domain = await response.json()
+    if (domain?.Answer?.length) {
+      console.log('IP', domain.Answer[0].data)
+    } else {
+      console.warn('DNS lookup did not return an A record for', url, domain)
+    }
+  } catch (error) {
+    console.error('Erro ao inicializar token/DNS:', error)
+  }
+}
+
+initializeSessionToken()
 
 function processPacket(packet) {
   presentation.renderPresentationLayer(packet)

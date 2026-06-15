@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Simulador de roteamento com algoritmo de Dijkstra — visualize o caminho mais curto entre roteadores com animação de pacotes.">
+  <link rel="stylesheet" href="./style/reset.css">
+  <link rel="stylesheet" href="./style/dijkstra.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Audiowide&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <title>Dijkstra — Simulador de Roteamento</title>
+</head>
+
+<body class="dijkstra-body">
+  <div class="net-bg"></div>
+
+  <header class="dijkstra-header">
+    <div class="header-left">
+      <a href="./index.html" class="btn-voltar" id="btn-voltar">← Voltar</a>
+      <div class="header-title-group">
+        <img class="osi-img" src="./assets/osi-icon.webp" alt="OSI Icon">
+        <div>
+          <h1>ROTEAMENTO DIJKSTRA</h1>
+          <p>Camada de Rede — Caminho Mais Curto</p>
+        </div>
+      </div>
+    </div>
+    <div class="header-badge">
+      <span class="pulse"></span>
+      <span>REDE ATIVA</span>
+    </div>
+  </header>
+
+  <main class="dijkstra-main">
+    <!-- Control Panel -->
+    <aside class="control-panel">
+
+      <!-- Route Selector -->
+      <div class="glass-card">
+        <h2 class="card-title"><span class="icon">🗺️</span> Configurar Rota</h2>
+
+        <div class="form-field">
+          <label for="select-origem">Roteador de Origem</label>
+          <select id="select-origem">
+            <option value="" disabled selected>Selecione a origem...</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="select-destino">Roteador de Destino</label>
+          <select id="select-destino">
+            <option value="" disabled selected>Selecione o destino...</option>
+          </select>
+        </div>
+
+        <button class="btn-calcular" id="btn-calcular">⚡ Calcular Rota</button>
+        <button class="btn-reset" id="btn-reset">🔄 Limpar</button>
+
+        <div class="speed-control">
+          <label for="speed-slider">Velocidade:</label>
+          <input type="range" id="speed-slider" min="0.3" max="4" step="0.1" value="1">
+          <span class="speed-value" id="speed-value">1.0x</span>
+        </div>
+      </div>
+
+      <!-- Route Info -->
+      <div class="glass-card">
+        <h2 class="card-title"><span class="icon">📊</span> Resultado</h2>
+
+        <div class="no-route-msg" id="no-route-msg">
+          ⚠️ Não foi possível encontrar uma rota entre os roteadores selecionados.
+        </div>
+
+        <div class="route-info" id="route-info">
+          <div class="info-row">
+            <span class="info-label">Saltos</span>
+            <span class="info-value" id="info-hops">—</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Distância</span>
+            <span class="info-value" id="info-dist">—</span>
+          </div>
+          <div class="route-path" id="route-path"></div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="glass-card">
+        <h2 class="card-title"><span class="icon">🏷️</span> Legenda</h2>
+        <div class="legend-items">
+          <div class="legend-item">
+            <span class="legend-dot active"></span>
+            <span>Roteador Ativo</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot inactive"></span>
+            <span>Roteador Inativo</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot path"></span>
+            <span>Roteador na Rota</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-line connection"></span>
+            <span>Conexão</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-line route"></span>
+            <span>Rota Ativa</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Canvas -->
+    <div class="canvas-wrapper">
+      <canvas id="network-canvas"></canvas>
+      <div class="router-tooltip" id="router-tooltip">
+        <div class="tooltip-title"></div>
+        <div class="tooltip-ip"></div>
+        <div class="tooltip-status"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module" src="./scripts/dijkstra.js"></script>
+</body>
+
+</html>

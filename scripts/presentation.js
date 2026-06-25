@@ -199,25 +199,87 @@ export function onFileChange(handler) {
 
 /* ===== Camada de Apresentação ===== */
 
-const SENSITIVE_FIELDS = {
-  chat: ['usuario', 'mensagem'],
-  site: ['hostIP', 'usuario'],
-  email: ['remetente', 'destinatario', 'assunto', 'corpo'],
-  arquivo: ['nomeArquivo', 'remetente']
+export function base64UrlEncode(str) {
+  return btoa(unescape(encodeURIComponent(str)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
 }
 
-const DISPLAY_FIELDS = {
-  chat: ['tipo', 'usuario', 'mensagem', 'protocolo', 'timestamp'],
-  site: ['tipo', 'metodo', 'hostIP', 'protocolo', 'usuario', 'timestamp'],
-  email: ['remetente', 'destinatario', 'assunto', 'corpo', 'protocolo', 'timestamp'],
-  arquivo: ['nomeArquivo', 'formato', 'remetente', 'protocolo', 'timestamp']
+export function simulateHmacSignature(input, secret = 'chave-secreta-osi') {
+  let hash = 0
+  const combined = input + secret
+  for (let i = 0; i < combined.length; i++) {
+    const char = combined.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32bit integer
+  }
+  const hex = Math.abs(hash).toString(16).padStart(8, '0')
+  return base64UrlEncode(
+    hex.repeat(4) + combined.length.toString(16).padStart(4, '0')
+  )
 }
 
-const TYPE_LABELS = {
-  chat: { number: 1, label: 'CHAT', varName: 'chat' },
-  site: { number: 2, label: 'SITES', varName: 'requisicaoSite' },
-  email: { number: 3, label: 'E-MAIL', varName: 'email' },
-  arquivo: { number: 4, label: 'ARQUIVOS', varName: 'arquivo' }
+export function generateJWT(payload) {
+  const header = { alg: 'HS256', typ: 'JWT' }
+  const headerB64 = base64UrlEncode(JSON.stringify(header))
+  const payloadB64 = base64UrlEncode(JSON.stringify(payload))
+  const signature = simulateHmacSignature(`${headerB64}.${payloadB64}`)
+  return {
+    token: `${headerB64}.${payloadB64}.${signature}`,
+    header,
+    payload,
+    headerB64,
+    payloadB64,
+    signature
+  }
+}
+
+export function renderPresentationLayer(packet) {
+  if (!presentationContainer) return
+
+  // Filtramos os campos para o payload do JWT para ficar limpo
+  const payload = { ...packet }
+  delete payload.key // removemos chave interna
+
+  const jwt = generateJWT(payload)
+
+  const cardHTML = `
+    <div class="presentation-card">
+      <div class="jwt-token-display">
+        <span class="jwt-part jwt-header" title="Header (Cabeçalho)">${jwt.headerB64}</span>.<span class="jwt-part jwt-payload" title="Payload (Carga Útil)">${jwt.payloadB64}</span>.<span class="jwt-part jwt-signature" title="Signature (Assinatura)">${jwt.signature}</span>
+      </div>
+      
+      <div class="jwt-details-grid">
+        <div class="jwt-detail-section">
+          <h4 class="jwt-section-title header-title">Header (Cabeçalho)</h4>
+          <pre class="jwt-json-block header-block">${JSON.stringify(jwt.header, null, 2)}</pre>
+        </div>
+        <div class="jwt-detail-section">
+          <h4 class="jwt-section-title payload-title">Payload (Carga Útil)</h4>
+          <pre class="jwt-json-block payload-block">${JSON.stringify(jwt.payload, null, 2)}</pre>
+        </div>
+        <div class="jwt-detail-section">
+          <h4 class="jwt-section-title signature-title">Assinatura</h4>
+          <pre class="jwt-json-block signature-block">HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+  "chave-secreta-osi"
+) = "${jwt.signature}"</pre>
+        </div>
+      </div>
+    </div>
+  `
+
+  presentationContainer.innerHTML = cardHTML
+  if (presentationSection) presentationSection.classList.remove('hidden')
+
+  return jwt.token
+}
+
+export function clearPresentationLayer() {
+  if (presentationContainer) presentationContainer.innerHTML = ''
+  if (presentationSection) presentationSection.classList.add('hidden')
 }
 
 function encryptCaesarCipher(value, shift = 3) {
@@ -232,59 +294,6 @@ function encryptCaesarCipher(value, shift = 3) {
     }
     return char
   }).join('')
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div')
-  div.textContent = text
-  return div.innerHTML
-}
-
-function buildCodeLine(prop, value, isSensitive, isLast) {
-  const comma = isLast ? '' : '<span class="syn-comma">,</span>'
-  const displayValue = escapeHtml(isSensitive ? encryptCaesarCipher(value) : String(value))
-  const stringClass = isSensitive ? 'syn-string-encrypted' : 'syn-string'
-
-  return `  <span class="syn-prop">${escapeHtml(prop)}</span>: <span class="${stringClass}">'${displayValue}'</span>${comma}`
-}
-
-export function renderPresentationLayer(packet) {
-  if (!presentationContainer) return
-
-  const tipo = packet.tipo
-  const meta = TYPE_LABELS[tipo]
-  if (!meta) return
-
-  const sensitiveList = SENSITIVE_FIELDS[tipo] || []
-  const fieldsToShow = DISPLAY_FIELDS[tipo] || []
-
-  const lines = fieldsToShow.map((prop, i) => {
-    const isSensitive = sensitiveList.includes(prop)
-    const isLast = i === fieldsToShow.length - 1
-    return buildCodeLine(prop, packet[prop], isSensitive, isLast)
-  })
-
-  const codeHTML = `<span class="syn-keyword">const</span> <span class="syn-var-name">${escapeHtml(meta.varName)}</span> <span class="syn-brace">=</span> <span class="syn-brace">{</span>
-${lines.join('\n')}
-<span class="syn-brace">}</span><span class="syn-semicolon">;</span>`
-
-  const cardHTML = `
-    <div class="presentation-card">
-      <div class="presentation-card-header">
-        <span class="presentation-card-number">${meta.number}</span>
-        <span class="presentation-card-type">${escapeHtml(meta.label)}</span>
-      </div>
-      <pre class="presentation-code-block">${codeHTML}</pre>
-    </div>
-  `
-
-  presentationContainer.innerHTML = cardHTML
-  if (presentationSection) presentationSection.classList.remove('hidden')
-}
-
-export function clearPresentationLayer() {
-  if (presentationContainer) presentationContainer.innerHTML = ''
-  if (presentationSection) presentationSection.classList.add('hidden')
 }
 
 export function initializeEncryptionUI() {

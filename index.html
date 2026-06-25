@@ -44,33 +44,18 @@
         <span class="panel-dot"></span>
         <span class="panel-title">TERMINAL DE ENCAPSULAMENTO</span>
       </div>
-      
+
       <div class="request-wrapper">
         <div class="input-prompt-container">
           <span class="terminal-prompt">></span>
           <input class="text-input" type="text" placeholder="Digite URL, E-mail ou Mensagem para simular...">
         </div>
         <button class="request-btn">Realizar Requisição</button>
-        
+
         <div class="file-upload-wrapper">
           <input type="file" name="file" id="arquivo">
         </div>
       </div>
-    </div>
-
-    <div style="text-align:center; margin: 24px 0;">
-      <a href="./dijkstra.html" id="btn-dijkstra" style="
-        display: inline-flex; align-items: center; gap: 10px;
-        padding: 14px 32px;
-        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-        color: #fff; text-decoration: none;
-        border-radius: 14px; font-family: 'Poppins', sans-serif;
-        font-size: 1rem; font-weight: 600;
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-        transition: all 0.3s ease; letter-spacing: 0.5px;
-      " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 10px 30px rgba(59,130,246,0.45)'"
-         onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 6px 20px rgba(59,130,246,0.3)'"
-      >🌐 Simulador de Roteamento — Dijkstra</a>
     </div>
 
     <div class="protocol-name-wrapper">
@@ -96,44 +81,46 @@
         <div class="presentation-container"></div>
       </section>
 
-      <section class="layer-section encryption-section hidden">
+      <!-- Camada de Sessão (L5) -->
+      <section class="layer-section session-layer-section hidden">
         <div class="layer-header">
           <span class="layer-number">5</span>
-          <h2 class="layer-title">Criptografia</h2>
-          <span class="layer-status">FERRAMENTA</span>
+          <h2 class="layer-title">Camada de Sessão</h2>
+          <span class="layer-status">STATUS: ATIVA</span>
         </div>
-        <div class="encryption-container">
-          <form id="encryption-form" class="dynamic-form">
-            <h3>Criptografar Texto</h3>
-            <div class="form-group">
-              <textarea id="encrypt-input" placeholder="Digite o texto a ser criptografado..."></textarea>
-              <label>Texto</label>
-            </div>
-            <div class="form-group">
-              <select id="algorithm">
-                <option value="caesar">Algoritmo padrão</option>
-              </select>
-              <label>Algoritmo</label>
-            </div>
-            <div class="form-group">
-              <input type="number" id="caesar-shift" value="3" min="1" max="25" />
-              <label>Chave</label>
-            </div>
-            <div class="form-actions">
-              <button type="button" id="encrypt-btn" class="form-submit-btn">Criptografar</button>
-              <button type="button" id="clear-encrypt" class="form-submit-btn">Limpar</button>
-            </div>
-            <div class="form-group">
-              <textarea id="encrypt-output" readonly placeholder="Resultado"></textarea>
-              <label>Resultado</label>
-            </div>
-          </form>
-        </div>
+        <div class="session-container"></div>
       </section>
+
+      <!-- Camada de Transporte (L4) -->
+      <section class="layer-section transport-layer-section hidden">
+        <div class="layer-header">
+          <span class="layer-number">4</span>
+          <h2 class="layer-title">Camada de Transporte</h2>
+          <span class="layer-status">STATUS: ATIVA</span>
+        </div>
+        <div class="transport-container"></div>
+      </section>
+
+      <!-- Camada de Rede (L3) -->
+      <section class="layer-section network-layer-section hidden">
+        <div class="layer-header">
+          <span class="layer-number">3</span>
+          <h2 class="layer-title">Camada de Rede</h2>
+          <span class="layer-status">STATUS: ATIVA</span>
+        </div>
+        <div class="network-container"></div>
+      </section>
+
+      <!-- Botão para Resetar a Simulação -->
+      <div class="reset-button-wrapper hidden" style="text-align: center; margin: 30px 0;">
+        <button id="btn-reset" class="form-submit-btn" style="width: auto; padding: 12px 30px; font-weight: bold;">Nova
+          Requisição</button>
+      </div>
+
 
     </div>
   </main>
-  
+
   <script type="module" src="./scripts/osi.js"></script>
 </body>
 

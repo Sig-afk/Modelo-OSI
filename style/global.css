@@ -10,7 +10,8 @@
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Courier New', monospace;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -91,6 +92,17 @@ html, body {
   padding: 18px;
   margin-bottom: 18px;
   box-shadow: 0 12px 30px rgba(15, 81, 184, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.layer-section-active {
+  transform: translateY(6px);
+  box-shadow: 0 16px 36px rgba(29, 78, 216, 0.16);
+}
+
+.layer-section-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .presentation-code-block {
@@ -134,15 +146,18 @@ html, body {
 }
 
 .jwt-header {
-  color: #ef4444; /* Vermelho */
+  color: #ef4444;
+  /* Vermelho */
 }
 
 .jwt-payload {
-  color: #3b82f6; /* Azul */
+  color: #3b82f6;
+  /* Azul */
 }
 
 .jwt-signature {
-  color: #10b981; /* Verde */
+  color: #10b981;
+  /* Verde */
 }
 
 .jwt-details-grid {
@@ -166,9 +181,17 @@ html, body {
   letter-spacing: 0.5px;
 }
 
-.jwt-section-title.header-title { color: #ef4444; }
-.jwt-section-title.payload-title { color: #1d4ed8; }
-.jwt-section-title.signature-title { color: #10b981; }
+.jwt-section-title.header-title {
+  color: #ef4444;
+}
+
+.jwt-section-title.payload-title {
+  color: #1d4ed8;
+}
+
+.jwt-section-title.signature-title {
+  color: #10b981;
+}
 
 .jwt-json-block {
   margin: 0;
@@ -183,7 +206,11 @@ html, body {
 }
 
 /* Estilo geral dos cartões e fluxos */
-.session-data-card, .transport-data-card, .network-data-card {
+.session-data-card,
+.transport-data-card,
+.network-data-card,
+.datalink-data-card,
+.physical-data-card {
   background: var(--panel-alt);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -219,6 +246,33 @@ html, body {
 .status-active {
   color: #22c55e;
   font-weight: 600;
+}
+
+.status-error {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.code-block {
+  margin-top: 14px;
+  padding: 12px;
+  background: #eff6ff;
+  border-radius: 10px;
+  border: 1px solid #bfdbfe;
+}
+
+.code-block-title {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.code-block pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--mono);
+  font-size: 0.8rem;
 }
 
 /* Three-Way Handshake */
@@ -332,4 +386,3 @@ html, body {
   color: #ef4444;
   font-weight: 600;
 }
-
